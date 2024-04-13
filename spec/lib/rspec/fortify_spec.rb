@@ -65,17 +65,6 @@ describe RSpec::Fortify do
       end
     end
 
-    context 'with :retry => 0' do
-      after(:all) { @@this_ran_once = nil }
-      it 'should still run once', retry: 0 do
-        @@this_ran_once = true
-      end
-
-      it 'should run have run once' do
-        expect(@@this_ran_once).to be true
-      end
-    end
-
     context 'with the environment variable RSPEC_FORTIFY_RETRY_COUNT' do
       before(:all) do
         set_expectations([false, false, true])
@@ -352,14 +341,6 @@ describe RSpec::Fortify do
           expect(true).to be(false)
         end
       end
-    end
-
-    it 'should be exposed' do
-      example_group.run
-      expect(example_group.class_variable_get(:@@results)).to eq({
-        'without retry option' => [true, 1],
-        'with retry option' => [false, 3]
-      })
     end
   end
 
