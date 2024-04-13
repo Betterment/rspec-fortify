@@ -1,7 +1,7 @@
 require 'rspec'
 require 'rspec/core/sandbox'
 
-require 'rspec/retry'
+require 'rspec/fortify'
 if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('2')
   require "pry-debugger"
 else
@@ -14,7 +14,7 @@ RSpec.configure do |config|
 
   config.around :example do |ex|
     RSpec::Core::Sandbox.sandboxed do |config|
-      RSpec::Retry.setup
+      RSpec::Fortify.setup
       ex.run
     end
   end

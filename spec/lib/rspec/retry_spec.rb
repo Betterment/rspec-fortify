@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe RSpec::Retry do
+describe RSpec::Fortify do
   def count
     @count ||= 0
     @count
@@ -26,7 +26,7 @@ describe RSpec::Retry do
   class OtherError < StandardError; end
   class SharedError < StandardError; end
   before(:all) do
-    ENV.delete('RSPEC_RETRY_RETRY_COUNT')
+    ENV.delete('RSPEC_FORTIFY_RETRY_COUNT')
   end
 
   context 'no retry option' do
@@ -76,14 +76,14 @@ describe RSpec::Retry do
       end
     end
 
-    context 'with the environment variable RSPEC_RETRY_RETRY_COUNT' do
+    context 'with the environment variable RSPEC_FORTIFY_RETRY_COUNT' do
       before(:all) do
         set_expectations([false, false, true])
-        ENV['RSPEC_RETRY_RETRY_COUNT'] = '3'
+        ENV['RSPEC_FORTIFY_RETRY_COUNT'] = '3'
       end
 
       after(:all) do
-        ENV.delete('RSPEC_RETRY_RETRY_COUNT')
+        ENV.delete('RSPEC_FORTIFY_RETRY_COUNT')
       end
 
       it 'should override the retry count set in an example', :retry => 2 do
@@ -390,16 +390,16 @@ describe RSpec::Retry do
       expect {
         group.run RSpec.configuration.reporter
       }.to change { output.string }.to a_string_including <<-STRING.gsub(/^\s+\| ?/, '')
-        | 1st Try error in ./spec/lib/rspec/retry_spec.rb:#{line_1}:
+        | 1st Try error in ./spec/lib/rspec/fortify_spec.rb:#{line_1}:
         | broken after hook
         |
-        | RSpec::Retry: 2nd try ./spec/lib/rspec/retry_spec.rb:#{line_1}
+        | RSpec::Fortify: 2nd try ./spec/lib/rspec/fortify_spec.rb:#{line_1}
         | F
-        | 1st Try error in ./spec/lib/rspec/retry_spec.rb:#{line_2}:
+        | 1st Try error in ./spec/lib/rspec/fortify_spec.rb:#{line_2}:
         | broken spec
         | broken after hook
         |
-        | RSpec::Retry: 2nd try ./spec/lib/rspec/retry_spec.rb:#{line_2}
+        | RSpec::Fortify: 2nd try ./spec/lib/rspec/fortify_spec.rb:#{line_2}
       STRING
     end
   end

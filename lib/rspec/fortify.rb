@@ -1,9 +1,9 @@
 require 'rspec/core'
-require 'rspec/retry/version'
+require 'rspec/fortify/version'
 require 'rspec_ext/rspec_ext'
 
 module RSpec
-  class Retry
+  class Fortify
     def self.setup
       RSpec.configure do |config|
         config.add_setting :verbose_retry, :default => false
@@ -54,7 +54,7 @@ module RSpec
     def retry_count
       [
           (
-          ENV['RSPEC_RETRY_RETRY_COUNT'] ||
+          ENV['RSPEC_FORTIFY_RETRY_COUNT'] ||
               ex.metadata[:retry] ||
               RSpec.configuration.retry_count_condition.call(ex) ||
               RSpec.configuration.default_retry_count
@@ -111,7 +111,7 @@ module RSpec
         if attempts > 0
           RSpec.configuration.formatters.each { |f| f.retry(example) if f.respond_to? :retry }
           if verbose_retry?
-            message = "RSpec::Retry: #{ordinalize(attempts + 1)} try #{example.location}"
+            message = "RSpec::Fortify: #{ordinalize(attempts + 1)} try #{example.location}"
             message = "\n" + message if attempts == 1
             RSpec.configuration.reporter.message(message)
           end
@@ -188,4 +188,4 @@ module RSpec
   end
 end
 
-RSpec::Retry.setup
+RSpec::Fortify.setup
