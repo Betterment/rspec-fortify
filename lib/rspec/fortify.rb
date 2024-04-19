@@ -38,14 +38,7 @@ module RSpec
         config.add_setting :retry_callback, :default => nil
 
         config.around :each do |example|
-          if main? || pr?
-            example.run_with_retry(
-              retry_on_success_count: 10,
-              retry_on_failure_count: 2,
-            )
-          else
-            example.run
-          end
+          example.run_with_retry
         end
       end
     end
