@@ -1,7 +1,9 @@
 # RSpec::Fortify
 
+RSpec::Fortify is a hard fork of [rspec-retry](https://github.com/NoRedInk/rspec-retry)
+
 RSpec::Fortify adds a ``:retry`` option for intermittently failing rspec examples.
-If an example has the ``:retry`` option, rspec will retry the example the
+If an example has the ``:retry`` option, rspec will run the example the
 specified number of times until the example succeeds.
 
 ## Installation
@@ -27,11 +29,6 @@ require in ``spec_helper.rb``
 require 'rspec/fortify'
 
 RSpec.configure do |config|
-  # show retry status in spec process
-  config.verbose_retry = true
-  # show exception that triggers a retry if verbose_retry is set to true
-  config.display_try_failure_messages = true
-
   # run retry only on features
   config.around :each, :js do |ex|
     ex.run_with_retry retry: 3
@@ -57,7 +54,6 @@ end
 it 'should succeed after a while', :retry => 3, :retry_wait => 10 do
   expect(command('service myservice status')).to eq('started')
 end
-# run spec (following log is shown if verbose_retry options is true)
 # RSpec::Fortify: 2nd try ./spec/lib/random_spec.rb:49
 # RSpec::Fortify: 3rd try ./spec/lib/random_spec.rb:49
 ```
@@ -76,6 +72,10 @@ You can call `ex.run_with_retry(opts)` on an individual example.
 - __:exceptions_to_hard_fail__(default: *[]*) List of exceptions that will trigger an immediate test failure without retry. Takes precedence over __:exceptions_to_retry__
 - __:exceptions_to_retry__(default: *[]*) List of exceptions that will trigger a retry (when empty, all exceptions will)
 - __:retry_callback__(default: *nil*) Callback function to be called between retries
+- __:retry_on_failure__(default: *main? || pr?*) Retry examples on failure. This is useful for flaky tests that are not marked with `:retry` metadata.
+- __:retry_on_failure_count__(default: *2*) Run examples on failure this many times.
+- __:retry_on_success__(default: *pr? && changed_specs.size < 30*) Retry examples on success. This is useful in order to prove that new tests are not flaky.
+- __:retry_on_success_count__(default: *10*) Run examples on success this many times.
 
 
 ## Environment Variables
