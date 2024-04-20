@@ -1,3 +1,9 @@
+# 1.0.0 - 2024-04-20
+## hard fork
+This is a hard fork of the original rspec-retry gem. The original gem has been abandoned and is no longer maintained.
+Added retry on success behavior
+
+
 # 0.6.2 - 2019-11-21
 ## enhancements
 expose `example.attempts` (in addition to `example.metadata[:attempts]`) (thanks @knu / #103)
