@@ -1,33 +1,17 @@
-# RSpec::Retry ![Build Status](https://secure.travis-ci.org/NoRedInk/rspec-retry.svg?branch=master)
+# RSpec::Fortify
 
-RSpec::Retry adds a ``:retry`` option for intermittently failing rspec examples.
-If an example has the ``:retry`` option, rspec will retry the example the
+RSpec::Fortify is a hard fork of [rspec-retry](https://github.com/NoRedInk/rspec-retry)
+
+RSpec::Fortify adds a ``:retry`` option for intermittently failing rspec examples.
+If an example has the ``:retry`` option, rspec will run the example the
 specified number of times until the example succeeds.
-
-### Compatibility
-
-| Rspec Version | Rspec-Retry Version |
-|---------------|---------------------|
-| > 3.8         | 0.6.2 but untested  |
-| > 3.3, <= 3.8 | 0.6.2               |
-| 3.2           | 0.4.6               |
-| 2.14.8        | 0.4.4               |
-
-### Maintenance Expectations
-
-NoRedInk used to be a Ruby shop, and we open-sourced this in the hope that it will help other people.
-However, we've been moving away from Ruby for some time now, and only plan to do maintenance on this repo when we have an internal need for it.
-We don't plan to add any new functionality, and expect that it will fall behind the latest versions of Ruby and Rspec.
-
-That said, if you're reading this and you need this gem to do something new, feel free to fork it and publish your own gem!
-If you open an issue here to let us know about your fork, we can add a link to it from this repo to help folks find something that's more actively maintained.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'rspec-retry', group: :test # Unlike rspec, this doesn't need to be included in development group
+gem 'rspec-fortify', group: :test # Unlike rspec, this doesn't need to be included in development group
 ```
 
 And then execute:
@@ -36,20 +20,15 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install rspec-retry
+    $ gem install rspec-fortify
 
 require in ``spec_helper.rb``
 
 ```ruby
 # spec/spec_helper.rb
-require 'rspec/retry'
+require 'rspec/fortify'
 
 RSpec.configure do |config|
-  # show retry status in spec process
-  config.verbose_retry = true
-  # show exception that triggers a retry if verbose_retry is set to true
-  config.display_try_failure_messages = true
-
   # run retry only on features
   config.around :each, :js do |ex|
     ex.run_with_retry retry: 3
@@ -75,9 +54,8 @@ end
 it 'should succeed after a while', :retry => 3, :retry_wait => 10 do
   expect(command('service myservice status')).to eq('started')
 end
-# run spec (following log is shown if verbose_retry options is true)
-# RSpec::Retry: 2nd try ./spec/lib/random_spec.rb:49
-# RSpec::Retry: 3rd try ./spec/lib/random_spec.rb:49
+# RSpec::Fortify: 2nd try ./spec/lib/random_spec.rb:49
+# RSpec::Fortify: 3rd try ./spec/lib/random_spec.rb:49
 ```
 
 ### Calling `run_with_retry` programmatically
@@ -94,10 +72,18 @@ You can call `ex.run_with_retry(opts)` on an individual example.
 - __:exceptions_to_hard_fail__(default: *[]*) List of exceptions that will trigger an immediate test failure without retry. Takes precedence over __:exceptions_to_retry__
 - __:exceptions_to_retry__(default: *[]*) List of exceptions that will trigger a retry (when empty, all exceptions will)
 - __:retry_callback__(default: *nil*) Callback function to be called between retries
+- __:retry_on_failure__(default: *main? || pr?*) Retry examples on failure. This is useful for flaky tests that are not marked with `:retry` metadata.
+- __:retry_on_failure_count__(default: *2*) Run examples on failure this many times.
+- __:retry_on_success__(default: *pr? && changed_specs.size < 30*) Retry examples on success. This is useful in order to prove that new tests are not flaky.
+- __:retry_on_success_count__(default: *10*) Run examples on success this many times.
 
 
 ## Environment Variables
-- __RSPEC_RETRY_RETRY_COUNT__ can override the retry counts even if a retry count is set in an example or default_retry_count is set in a configuration.
+- __RSPEC_FORTIFY_RETRY_COUNT__ can override the retry counts even if a retry count is set in an example or default_retry_count is set in a configuration.
+- __CHANGED_SPECS__ can be set to a comma-separated list of spec files that have changed. This is used to determine if an example should be retried on success.
+- __CI__ is used to determine if the current environment is a CI environment. This is used to determine if examples should be retried on success.
+- __CIRCLE_PULL_REQUEST__ is used to determine if the current CI build is a pull request or a default branch build. This is used to determine if examples should be retried on success.
+
 
 ## Contributing
 

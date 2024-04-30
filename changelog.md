@@ -1,3 +1,9 @@
+# 1.0.0.pre - 2024-04-20
+## hard fork
+This is a hard fork of the original rspec-retry gem. The original gem has been abandoned and is no longer maintained.
+Added retry on success behavior
+
+
 # 0.6.2 - 2019-11-21
 ## enhancements
 expose `example.attempts` (in addition to `example.metadata[:attempts]`) (thanks @knu / #103)
@@ -81,12 +87,12 @@ spit out some debug information about why an exception is being retried
 setting retry to 0 will still run tests (#34)
 
 ## enhancements
-can set env variable RSPEC_RETRY_RETRY_COUNT to override anything specified in
+can set env variable RSPEC_FORTIFY_RETRY_COUNT to override anything specified in
 code (thanks @sunflat, #28, #36)
 
 # 0.4.1 - 2015-7-9
 ## bugfixes
-rspec-retry now supports rspec 3.3. (thanks @eitoball, #32)
+rspec-fortify now supports rspec 3.3. (thanks @eitoball, #32)
 
 ## dev changes
 include travis configuration for testing rspec 3.2.* and 3.3.*
