@@ -12,7 +12,6 @@ Gem::Specification.new do |spec|
   spec.license       = 'MIT'
   spec.metadata['rubygems_mfa_required'] = 'true'
 
-
   spec.files         = `git ls-files`.split($OUTPUT_RECORD_SEPARATOR)
   spec.executables   = []
   spec.name          = 'rspec-fortify'
