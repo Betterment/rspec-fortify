@@ -10,6 +10,8 @@ Gem::Specification.new do |spec|
   spec.summary       = 'retry intermittently failing rspec examples'
   spec.homepage      = 'https://github.com/Betterment/rspec-fortify'
   spec.license       = 'MIT'
+  spec.metadata['rubygems_mfa_required'] = 'true'
+
 
   spec.files         = `git ls-files`.split($OUTPUT_RECORD_SEPARATOR)
   spec.executables   = []
@@ -18,5 +20,4 @@ Gem::Specification.new do |spec|
   spec.version       = RSpec::Fortify::VERSION
   spec.required_ruby_version = '>= 2.6'
   spec.add_runtime_dependency 'rspec-core', '>3.9'
-  spec.metadata['rubygems_mfa_required'] = 'true'
 end
