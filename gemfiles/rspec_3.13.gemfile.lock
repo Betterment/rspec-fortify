@@ -1,7 +1,7 @@
 PATH
   remote: ..
   specs:
-    rspec-fortify (1.0.0)
+    rspec-fortify (1.0.0.pre)
       rspec-core (> 3.9)
 
 GEM

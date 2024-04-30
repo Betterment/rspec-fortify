@@ -1,4 +1,4 @@
-# 1.0.0 - 2024-04-20
+# 1.0.0.pre - 2024-04-20
 ## hard fork
 This is a hard fork of the original rspec-retry gem. The original gem has been abandoned and is no longer maintained.
 Added retry on success behavior
