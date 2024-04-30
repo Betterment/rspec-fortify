@@ -229,7 +229,7 @@ module RSpec
 end
 
 def cast_to_boolean(value)
-  if %w(false f 0 no n).include?(value.to_s.downcase)
+  if value.nil? || %w(false f 0 no n).include?(value.to_s.downcase)
     false
   else
     true
