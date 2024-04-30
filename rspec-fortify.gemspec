@@ -1,22 +1,22 @@
-# -*- encoding: utf-8 -*-
-require File.expand_path('../lib/rspec/fortify/version', __FILE__)
+# frozen_string_literal: true
 
-Gem::Specification.new do |gem|
-  gem.authors       = ['Yusuke Mito', 'Michael Glass', 'Devin Burnette']
-  gem.email         = ["devin@betterment.com"]
-  gem.description   = %q{retry intermittently failing rspec examples}
-  gem.summary       = %q{retry intermittently failing rspec examples}
-  gem.homepage      = "https://github.com/Betterment/rspec-fortify"
-  gem.license       = "MIT"
+require 'English'
+require File.expand_path('lib/rspec/fortify/version', __dir__)
 
-  gem.files         = `git ls-files`.split($\)
-  gem.executables   = []
-  gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
-  gem.name          = "rspec-fortify"
-  gem.require_paths = ["lib"]
-  gem.version       = RSpec::Fortify::VERSION
-  gem.add_runtime_dependency(%{rspec-core}, '>3.9')
-  gem.add_development_dependency %q{appraisal}
-  gem.add_development_dependency %q{rspec}
-  gem.add_development_dependency %q{tty-command}
+Gem::Specification.new do |spec|
+  spec.authors       = ['Yusuke Mito', 'Michael Glass', 'Devin Burnette']
+  spec.email         = ['devin@betterment.com']
+  spec.description   = 'retry intermittently failing rspec examples'
+  spec.summary       = 'retry intermittently failing rspec examples'
+  spec.homepage      = 'https://github.com/Betterment/rspec-fortify'
+  spec.license       = 'MIT'
+
+  spec.files         = `git ls-files`.split($OUTPUT_RECORD_SEPARATOR)
+  spec.executables   = []
+  spec.name          = 'rspec-fortify'
+  spec.require_paths = ['lib']
+  spec.version       = RSpec::Fortify::VERSION
+  spec.required_ruby_version = '>= 2.6'
+  spec.add_runtime_dependency 'rspec-core', '>3.9'
+  spec.metadata['rubygems_mfa_required'] = 'true'
 end

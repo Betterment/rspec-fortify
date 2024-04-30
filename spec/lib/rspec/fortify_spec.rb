@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'tty-command'
 
@@ -16,19 +18,19 @@ describe RSpec::Fortify do
         end
 
         it 'retries bad test examples the configured failed retry amount' do
-          out, _err = cmd.run!('bundle exec rspec spec/fixtures/bad_test.rb', env:)
+          out, _err = cmd.run!('bundle exec rspec spec/fixtures/bad_test.rb', env: env)
           expect(out).to include('2nd try')
           expect(out).not_to include('10th try')
         end
 
         it 'runs good test examples once' do
-          out, _err = cmd.run!('bundle exec rspec spec/fixtures/good_test.rb', env:)
+          out, _err = cmd.run!('bundle exec rspec spec/fixtures/good_test.rb', env: env)
           expect(out).to include('1st try')
           expect(out).not_to include('2nd try')
         end
 
         it 'runs flaky test examples once' do
-          out, _err = cmd.run!('bundle exec rspec spec/fixtures/flaky_test.rb', env:)
+          out, _err = cmd.run!('bundle exec rspec spec/fixtures/flaky_test.rb', env: env)
           expect(out).to include('1st try')
           expect(out).not_to include('2nd try')
         end
@@ -43,19 +45,19 @@ describe RSpec::Fortify do
         end
 
         it 'retries bad test examples the configured failed retry amount' do
-          out, _err = cmd.run!('bundle exec rspec spec/fixtures/bad_test.rb', env:)
+          out, _err = cmd.run!('bundle exec rspec spec/fixtures/bad_test.rb', env: env)
           expect(out).to include('2nd try')
           expect(out).not_to include('10th try')
         end
 
         it 'runs good test examples once' do
-          out, _err = cmd.run!('bundle exec rspec spec/fixtures/good_test.rb', env:)
+          out, _err = cmd.run!('bundle exec rspec spec/fixtures/good_test.rb', env: env)
           expect(out).to include('1st try')
           expect(out).not_to include('2nd try')
         end
 
         it 'runs flaky test examples once' do
-          out, _err = cmd.run!('bundle exec rspec spec/fixtures/flaky_test.rb', env:)
+          out, _err = cmd.run!('bundle exec rspec spec/fixtures/flaky_test.rb', env: env)
           expect(out).to include('1st try')
           expect(out).not_to include('2nd try')
         end
@@ -75,19 +77,19 @@ describe RSpec::Fortify do
           end
 
           it 'retries bad test examples the configured failed retry amount' do
-            out, _err = cmd.run!('bundle exec rspec spec/fixtures/bad_test.rb', env:)
+            out, _err = cmd.run!('bundle exec rspec spec/fixtures/bad_test.rb', env: env)
             expect(out).to include('2nd try')
             expect(out).not_to include('10th try')
           end
 
           it 'runs good test examples once' do
-            out, _err = cmd.run!('bundle exec rspec spec/fixtures/good_test.rb', env:)
+            out, _err = cmd.run!('bundle exec rspec spec/fixtures/good_test.rb', env: env)
             expect(out).to include('1st try')
             expect(out).not_to include('2nd try')
           end
 
           it 'runs flaky test examples once' do
-            out, _err = cmd.run!('bundle exec rspec spec/fixtures/flaky_test.rb', env:)
+            out, _err = cmd.run!('bundle exec rspec spec/fixtures/flaky_test.rb', env: env)
             expect(out).to include('1st try')
             expect(out).not_to include('2nd try')
           end
@@ -104,18 +106,18 @@ describe RSpec::Fortify do
           end
 
           it 'retries bad test examples the configured failed retry amount' do
-            out, _err = cmd.run!('bundle exec rspec spec/fixtures/bad_test.rb', env:)
+            out, _err = cmd.run!('bundle exec rspec spec/fixtures/bad_test.rb', env: env)
             expect(out).to include('1st try')
             expect(out).not_to include('2nd try')
           end
 
           it 'retries good test examples the configured success retry amount' do
-            out, _err = cmd.run!('bundle exec rspec spec/fixtures/good_test.rb', env:)
+            out, _err = cmd.run!('bundle exec rspec spec/fixtures/good_test.rb', env: env)
             expect(out).to include('10th try')
           end
 
           it 'retries flaky test examples until they flake' do
-            out, _err = cmd.run!('bundle exec rspec spec/fixtures/flaky_test.rb', env:)
+            out, _err = cmd.run!('bundle exec rspec spec/fixtures/flaky_test.rb', env: env)
             expect(out).to include('2nd try')
           end
         end
@@ -131,19 +133,19 @@ describe RSpec::Fortify do
         end
 
         it 'retries bad test examples the configured failed retry amount' do
-          out, _err = cmd.run!('bundle exec rspec spec/fixtures/bad_test.rb', env:)
+          out, _err = cmd.run!('bundle exec rspec spec/fixtures/bad_test.rb', env: env)
           expect(out).to include('2nd try')
           expect(out).not_to include('10th try')
         end
 
         it 'runs good test examples once' do
-          out, _err = cmd.run!('bundle exec rspec spec/fixtures/good_test.rb', env:)
+          out, _err = cmd.run!('bundle exec rspec spec/fixtures/good_test.rb', env: env)
           expect(out).to include('1st try')
           expect(out).not_to include('2nd try')
         end
 
         it 'runs flaky test examples once' do
-          out, _err = cmd.run!('bundle exec rspec spec/fixtures/flaky_test.rb', env:)
+          out, _err = cmd.run!('bundle exec rspec spec/fixtures/flaky_test.rb', env: env)
           expect(out).to include('1st try')
           expect(out).not_to include('2nd try')
         end
@@ -161,19 +163,19 @@ describe RSpec::Fortify do
         end
 
         it 'runs bad test examples once' do
-          out, _err = cmd.run!('bundle exec rspec spec/fixtures/bad_test.rb', env:)
+          out, _err = cmd.run!('bundle exec rspec spec/fixtures/bad_test.rb', env: env)
           expect(out).to include('1st try')
           expect(out).not_to include('2nd try')
         end
 
         it 'runs good test examples once' do
-          out, _err = cmd.run!('bundle exec rspec spec/fixtures/good_test.rb', env:)
+          out, _err = cmd.run!('bundle exec rspec spec/fixtures/good_test.rb', env: env)
           expect(out).to include('1st try')
           expect(out).not_to include('2nd try')
         end
 
         it 'runs flaky test examples once' do
-          out, _err = cmd.run!('bundle exec rspec spec/fixtures/flaky_test.rb', env:)
+          out, _err = cmd.run!('bundle exec rspec spec/fixtures/flaky_test.rb', env: env)
           expect(out).to include('1st try')
           expect(out).not_to include('2nd try')
         end
@@ -188,19 +190,19 @@ describe RSpec::Fortify do
         end
 
         it 'runs bad test examples once' do
-          out, _err = cmd.run!('bundle exec rspec spec/fixtures/bad_test.rb', env:)
+          out, _err = cmd.run!('bundle exec rspec spec/fixtures/bad_test.rb', env: env)
           expect(out).to include('1st try')
           expect(out).not_to include('2nd try')
         end
 
         it 'runs good test examples once' do
-          out, _err = cmd.run!('bundle exec rspec spec/fixtures/good_test.rb', env:)
+          out, _err = cmd.run!('bundle exec rspec spec/fixtures/good_test.rb', env: env)
           expect(out).to include('1st try')
           expect(out).not_to include('2nd try')
         end
 
         it 'runs flaky test examples once' do
-          out, _err = cmd.run!('bundle exec rspec spec/fixtures/flaky_test.rb', env:)
+          out, _err = cmd.run!('bundle exec rspec spec/fixtures/flaky_test.rb', env: env)
           expect(out).to include('1st try')
           expect(out).not_to include('2nd try')
         end

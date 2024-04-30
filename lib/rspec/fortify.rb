@@ -1,52 +1,52 @@
+# frozen_string_literal: true
+
 require 'rspec/core'
 require 'rspec/fortify/version'
 require 'rspec_ext/rspec_ext'
 
 module RSpec
   class Fortify
-    def self.setup
+    def self.setup # rubocop:disable Metrics/AbcSize
       RSpec.configure do |config|
-        config.add_setting :clear_lets_on_failure, :default => true
-        config.add_setting :default_retry_count, :default => 1
-        config.add_setting :default_sleep_interval, :default => 0
-        config.add_setting :display_try_failure_messages, :default => true
-        config.add_setting :exponential_backoff, :default => false
+        config.add_setting :clear_lets_on_failure, default: true
+        config.add_setting :default_retry_count, default: 1
+        config.add_setting :default_sleep_interval, default: 0
+        config.add_setting :display_try_failure_messages, default: true
+        config.add_setting :exponential_backoff, default: false
         config.add_setting :retry_on_failure, default: main? || pr?
         config.add_setting :retry_on_failure_count, default: 2
         config.add_setting :retry_on_success, default: pr? && changed_specs.size < 30
         config.add_setting :retry_on_success_count, default: 10
-        config.add_setting :verbose_retry, :default => true
+        config.add_setting :verbose_retry, default: true
 
         # retry based on example metadata
-        config.add_setting :retry_count_condition, :default => ->(_) { nil }
+        config.add_setting :retry_count_condition, default: ->(_) {}
 
         # If a list of exceptions is provided and 'retry' > 1, we only retry if
         # the exception that was raised by the example is NOT in that list. Otherwise
         # we ignore the 'retry' value and fail immediately.
         #
         # If no list of exceptions is provided and 'retry' > 1, we always retry.
-        config.add_setting :exceptions_to_hard_fail, :default => []
+        config.add_setting :exceptions_to_hard_fail, default: []
 
         # If a list of exceptions is provided and 'retry' > 1, we only retry if
         # the exception that was raised by the example is in that list. Otherwise
         # we ignore the 'retry' value and fail immediately.
         #
         # If no list of exceptions is provided and 'retry' > 1, we always retry.
-        config.add_setting :exceptions_to_retry, :default => []
+        config.add_setting :exceptions_to_retry, default: []
 
         # Callback between retries
-        config.add_setting :retry_callback, :default => nil
+        config.add_setting :retry_callback, default: nil
 
-        config.around :each do |example|
-          example.run_with_retry
-        end
+        config.around :each, &:run_with_retry
       end
     end
 
     attr_reader :context, :ex
 
-    def initialize(ex, opts = {})
-      @ex = ex
+    def initialize(example, opts = {})
+      @ex = example
       @ex.metadata.merge!(opts)
       current_example.attempts ||= 0
     end
@@ -55,7 +55,7 @@ module RSpec
       @current_example ||= RSpec.current_example
     end
 
-    def retry_count
+    def retry_count # rubocop:disable Metrics/AbcSize
       if retry_on_success?
         RSpec.configuration.retry_on_success_count
       elsif retry_on_failure?
@@ -82,28 +82,30 @@ module RSpec
     end
 
     def clear_lets
-      !ex.metadata[:clear_lets_on_failure].nil? ?
-          ex.metadata[:clear_lets_on_failure] :
-          RSpec.configuration.clear_lets_on_failure
+      if ex.metadata[:clear_lets_on_failure].nil?
+        RSpec.configuration.clear_lets_on_failure
+      else
+        ex.metadata[:clear_lets_on_failure]
+      end
     end
 
     def sleep_interval
       if ex.metadata[:exponential_backoff]
-          2**(current_example.attempts-1) * ex.metadata[:retry_wait]
+        (2**(current_example.attempts - 1)) * ex.metadata[:retry_wait]
       else
-          ex.metadata[:retry_wait] ||
-              RSpec.configuration.default_sleep_interval
+        ex.metadata[:retry_wait] ||
+          RSpec.configuration.default_sleep_interval
       end
     end
 
     def exceptions_to_hard_fail
       ex.metadata[:exceptions_to_hard_fail] ||
-          RSpec.configuration.exceptions_to_hard_fail
+        RSpec.configuration.exceptions_to_hard_fail
     end
 
     def exceptions_to_retry
       ex.metadata[:exceptions_to_retry] ||
-          RSpec.configuration.exceptions_to_retry
+        RSpec.configuration.exceptions_to_retry
     end
 
     def verbose_retry?
@@ -114,7 +116,7 @@ module RSpec
       RSpec.configuration.display_try_failure_messages?
     end
 
-    def run
+    def run # rubocop:disable Metrics/PerceivedComplexity, Metrics/AbcSize, Metrics/CyclomaticComplexity
       loop do
         RSpec.configuration.formatters.each { |f| f.retry(ex) if f.respond_to? :retry } if attempts.positive?
 
@@ -142,9 +144,7 @@ module RSpec
           break
         end
 
-        if exceptions_to_retry.any? && ex.exception && !exception_exists_in?(exceptions_to_retry, ex.exception)
-          break
-        end
+        break if exceptions_to_retry.any? && ex.exception && !exception_exists_in?(exceptions_to_retry, ex.exception)
 
         if verbose_retry? && display_try_failure_messages? && retry_on_failure? && (attempts != retry_count)
           exception_strings =
@@ -172,21 +172,21 @@ module RSpec
 
     # borrowed from ActiveSupport::Inflector
     def ordinalize(number)
-      if (11..13).include?(number.to_i % 100)
+      if (11..13).cover?(number.to_i % 100)
         "#{number}th"
       else
         case number.to_i % 10
-        when 1; "#{number}st"
-        when 2; "#{number}nd"
-        when 3; "#{number}rd"
-        else    "#{number}th"
+          when 1 then "#{number}st"
+          when 2 then "#{number}nd"
+          when 3 then "#{number}rd"
+          else "#{number}th"
         end
       end
     end
 
     def exception_exists_in?(list, exception)
       list.any? do |exception_klass|
-        exception.is_a?(exception_klass) || exception_klass === exception
+        exception.is_a?(exception_klass) || exception_klass === exception # rubocop:disable Style/CaseEquality
       end
     end
 
@@ -229,11 +229,7 @@ module RSpec
 end
 
 def cast_to_boolean(value)
-  if value.nil? || %w(false f 0 no n).include?(value.to_s.downcase)
-    false
-  else
-    true
-  end
+  !(value.nil? || %w(false f 0 no n).include?(value.to_s.downcase))
 end
 
 def ci?
