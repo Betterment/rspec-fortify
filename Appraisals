@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 appraise 'rspec-3.9' do
   gem 'rspec', '~> 3.9.0'
 end
