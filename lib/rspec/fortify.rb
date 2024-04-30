@@ -229,7 +229,11 @@ module RSpec
 end
 
 def cast_to_boolean(value)
-  !(value.nil? || %w(false f 0 no n).include?(value.to_s.downcase))
+  if value.nil? || %w(false f 0 no n).include?(value.to_s.downcase) # rubocop:disable Style/IfWithBooleanLiteralBranches
+    false
+  else
+    true
+  end
 end
 
 def ci?
