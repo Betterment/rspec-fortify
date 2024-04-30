@@ -81,6 +81,9 @@ You can call `ex.run_with_retry(opts)` on an individual example.
 ## Environment Variables
 - __RSPEC_FORTIFY_RETRY_COUNT__ can override the retry counts even if a retry count is set in an example or default_retry_count is set in a configuration.
 - __CHANGED_SPECS__ can be set to a comma-separated list of spec files that have changed. This is used to determine if an example should be retried on success.
+- __CI__ is used to determine if the current environment is a CI environment. This is used to determine if examples should be retried on success.
+- __CIRCLE_PULL_REQUEST__ is used to determine if the current CI build is a pull request or a default branch build. This is used to determine if examples should be retried on success.
+
 
 ## Contributing
 
