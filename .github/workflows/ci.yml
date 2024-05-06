@@ -1,6 +1,9 @@
 name: CI
 
-on: [push, pull_request]
+on:
+  pull_request:
+  push:
+    branches: main
 
 jobs:
   test:
@@ -8,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby: ['3.0', '3.1', '3.2']
+        ruby: ['3.1', '3.2', '3.3']
         gemfile:
           - gemfiles/rspec_3.9.gemfile
           - gemfiles/rspec_3.10.gemfile
@@ -16,7 +19,7 @@ jobs:
           - gemfiles/rspec_3.12.gemfile
           - gemfiles/rspec_3.13.gemfile
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - uses: ruby/setup-ruby@v1
       env:
         BUNDLE_GEMFILE: ${{ matrix.gemfile }}
