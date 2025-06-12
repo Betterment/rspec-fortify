@@ -2,14 +2,14 @@
 
 require 'rspec/fortify'
 
-# Need to store the original method by capturing it from the current context
-$original_git_diff_changed_specs_method = method(:git_diff_changed_specs) # rubocop:disable Style/GlobalVars
+module GitDiffChangedSpecsStub
+  def git_diff_changed_specs
+    "spec/fixtures/diff_test.rb\n"
+  end
+end
 
-def git_diff_changed_specs
-  if ENV['STUB_GIT_DIFF'] == 'true'
-    "spec/fixtures/good_test.rb\n"
-  else
-    # Call the original method
-    $original_git_diff_changed_specs_method.call # rubocop:disable Style/GlobalVars
+RSpec.configure do |config|
+  config.before(:suite) do
+    RSpec::Fortify.singleton_class.prepend(GitDiffChangedSpecsStub)
   end
 end

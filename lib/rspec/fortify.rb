@@ -43,6 +43,39 @@ module RSpec
       end
     end
 
+    def self.default_branch?
+      ci? && !pr?
+    end
+
+    def self.cast_to_boolean(value) # rubocop:disable Naming/PredicateMethod
+      if value.nil? || %w(false f 0 no n).include?(value.to_s.downcase) # rubocop:disable Style/IfWithBooleanLiteralBranches
+        false
+      else
+        true
+      end
+    end
+
+    def self.ci?
+      cast_to_boolean(ENV.fetch('CI', 'false'))
+    end
+
+    def self.pr?
+      ci? && cast_to_boolean(ENV.fetch('CIRCLE_PULL_REQUEST', 'false'))
+    end
+
+    def self.git_diff_changed_specs
+      `git diff --merge-base origin/#{default_branch} --name-only --relative --diff-filter=AM -- '*_spec.rb'`
+    end
+
+    def self.default_branch
+      ENV.fetch('RSPEC_FORTIFY_DEFAULT_BRANCH', 'main')
+    end
+
+    def self.changed_specs
+      ENV.fetch('CHANGED_SPECS', nil)&.split(',') ||
+        git_diff_changed_specs.chomp.split("\n") || []
+    end
+
     attr_reader :context, :ex
 
     def initialize(example, opts = {})
@@ -191,7 +224,7 @@ module RSpec
     end
 
     def log_first_attempt?
-      cast_to_boolean(ENV.fetch('RSPEC_FORTIFY_LOG_FIRST_ATTEMPT', 'false'))
+      RSpec::Fortify.cast_to_boolean(ENV.fetch('RSPEC_FORTIFY_LOG_FIRST_ATTEMPT', 'false'))
     end
 
     def retry_on_failure?
@@ -203,7 +236,7 @@ module RSpec
     end
 
     def current_example_changed?
-      changed_specs.include?(ex.file_path.sub(%r{^\./}, ''))
+      RSpec::Fortify.changed_specs.include?(ex.file_path.sub(%r{^\./}, ''))
     end
 
     def current_attempt_failed?
@@ -222,39 +255,6 @@ module RSpec
       end
     end
   end
-end
-
-def cast_to_boolean(value) # rubocop:disable Naming/PredicateMethod
-  if value.nil? || %w(false f 0 no n).include?(value.to_s.downcase) # rubocop:disable Style/IfWithBooleanLiteralBranches
-    false
-  else
-    true
-  end
-end
-
-def ci?
-  cast_to_boolean(ENV.fetch('CI', 'false'))
-end
-
-def pr?
-  ci? && cast_to_boolean(ENV.fetch('CIRCLE_PULL_REQUEST', 'false'))
-end
-
-def default_branch?
-  ci? && !pr?
-end
-
-def default_branch
-  ENV.fetch('RSPEC_FORTIFY_DEFAULT_BRANCH', 'main')
-end
-
-def git_diff_changed_specs
-  `git diff --merge-base origin/#{default_branch} --name-only --relative --diff-filter=AM -- '*_spec.rb'`
-end
-
-def changed_specs
-  ENV.fetch('CHANGED_SPECS', nil)&.split(',') ||
-    git_diff_changed_specs.chomp.split("\n") || []
 end
 
 RSpec::Fortify.setup
