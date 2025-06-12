@@ -6,14 +6,14 @@ require 'rspec_ext/rspec_ext'
 
 module RSpec
   class Fortify
-    def self.setup # rubocop:disable Metrics/AbcSize
+    def self.setup
       RSpec.configure do |config|
         config.add_setting :clear_lets_on_failure, default: true
         config.add_setting :default_retry_count, default: 1
         config.add_setting :default_sleep_interval, default: 0
         config.add_setting :display_try_failure_messages, default: true
         config.add_setting :exponential_backoff, default: false
-        config.add_setting :retry_on_failure, default: main? || pr?
+        config.add_setting :retry_on_failure, default: default_branch? || pr?
         config.add_setting :retry_on_failure_count, default: 2
         config.add_setting :retry_on_success, default: pr? && changed_specs.size < 30
         config.add_setting :retry_on_success_count, default: 10
@@ -43,6 +43,39 @@ module RSpec
       end
     end
 
+    def self.default_branch?
+      ci? && !pr?
+    end
+
+    def self.cast_to_boolean(value) # rubocop:disable Naming/PredicateMethod
+      if value.nil? || %w(false f 0 no n).include?(value.to_s.downcase) # rubocop:disable Style/IfWithBooleanLiteralBranches
+        false
+      else
+        true
+      end
+    end
+
+    def self.ci?
+      cast_to_boolean(ENV.fetch('CI', 'false'))
+    end
+
+    def self.pr?
+      ci? && cast_to_boolean(ENV.fetch('CIRCLE_PULL_REQUEST', 'false'))
+    end
+
+    def self.git_diff_changed_specs
+      `git diff --merge-base origin/#{default_branch} --name-only --relative --diff-filter=AM -- '*_spec.rb'`
+    end
+
+    def self.default_branch
+      ENV.fetch('RSPEC_FORTIFY_DEFAULT_BRANCH', 'main')
+    end
+
+    def self.changed_specs
+      ENV.fetch('CHANGED_SPECS', nil)&.split(',') ||
+        git_diff_changed_specs.chomp.split("\n") || []
+    end
+
     attr_reader :context, :ex
 
     def initialize(example, opts = {})
@@ -55,7 +88,7 @@ module RSpec
       @current_example ||= RSpec.current_example
     end
 
-    def retry_count # rubocop:disable Metrics/AbcSize
+    def retry_count
       if retry_on_success?
         RSpec.configuration.retry_on_success_count
       elsif retry_on_failure?
@@ -176,10 +209,10 @@ module RSpec
         "#{number}th"
       else
         case number.to_i % 10
-          when 1 then "#{number}st"
-          when 2 then "#{number}nd"
-          when 3 then "#{number}rd"
-          else "#{number}th"
+        when 1 then "#{number}st"
+        when 2 then "#{number}nd"
+        when 3 then "#{number}rd"
+        else "#{number}th"
         end
       end
     end
@@ -191,7 +224,7 @@ module RSpec
     end
 
     def log_first_attempt?
-      cast_to_boolean(ENV.fetch('RSPEC_FORTIFY_LOG_FIRST_ATTEMPT', 'false'))
+      RSpec::Fortify.cast_to_boolean(ENV.fetch('RSPEC_FORTIFY_LOG_FIRST_ATTEMPT', 'false'))
     end
 
     def retry_on_failure?
@@ -203,11 +236,7 @@ module RSpec
     end
 
     def current_example_changed?
-      # Added or modified specs can be passed in via this
-      # CHANGED_SPECS env var using some version of git diff like:
-      # git diff origin/main...HEAD --name-only --relative --diff-filter=AM | grep '_spec.rb$' | tr '\n' ',' | sed 's/,$//'
-      changed_specs = ENV.fetch('CHANGED_SPECS', nil)&.split(',') || []
-      changed_specs.include?(ex.file_path.sub(%r{^\./}, ''))
+      RSpec::Fortify.changed_specs.include?(ex.file_path.sub(%r{^\./}, ''))
     end
 
     def current_attempt_failed?
@@ -226,30 +255,6 @@ module RSpec
       end
     end
   end
-end
-
-def cast_to_boolean(value)
-  if value.nil? || %w(false f 0 no n).include?(value.to_s.downcase) # rubocop:disable Style/IfWithBooleanLiteralBranches
-    false
-  else
-    true
-  end
-end
-
-def ci?
-  cast_to_boolean(ENV.fetch('CI', 'false'))
-end
-
-def pr?
-  ci? && cast_to_boolean(ENV.fetch('CIRCLE_PULL_REQUEST', 'false'))
-end
-
-def main?
-  ci? && !pr?
-end
-
-def changed_specs
-  ENV.fetch('CHANGED_SPECS', nil)&.split(',') || []
 end
 
 RSpec::Fortify.setup

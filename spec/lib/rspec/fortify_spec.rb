@@ -208,5 +208,20 @@ describe RSpec::Fortify do
         end
       end
     end
+
+    context 'when git diff fallback' do
+      let(:env) do
+        {
+          'CI' => 'true',
+          'CIRCLE_PULL_REQUEST' => 'https://github.com/foo/bar/pull/123',
+          'RSPEC_FORTIFY_LOG_FIRST_ATTEMPT' => 'true',
+        }
+      end
+
+      it 'retries diff test examples the configured success retry amount' do
+        out, _err = cmd.run!('bundle exec rspec spec/fixtures/diff_test.rb', env: env)
+        expect(out).to include('10th try')
+      end
+    end
   end
 end
