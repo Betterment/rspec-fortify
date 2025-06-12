@@ -8,7 +8,7 @@ module RSpec
       RSpec::Core::Formatters.register self, :example_passed
 
       def initialize(output)
-        super(output)
+        super
         @tries = Hash.new { |h, k| h[k] = { successes: 0, tries: 0 } }
       end
 
@@ -22,14 +22,14 @@ module RSpec
 
       def dump_pending(_); end
 
-      def dump_summary(notification) # rubocop:disable Metrics/AbcSize
+      def dump_summary(notification)
         summary = "\nRSpec Fortify Summary:\n"
         @tries.each do |key, retry_data|
           next if retry_data[:successes] < 1 || retry_data[:tries] <= 1
 
           summary += "\t#{key.location}: #{key.full_description}: passed at attempt #{retry_data[:tries]}\n"
         end
-        retried = @tries.count { |_, v| v[:tries] > 1 && (v[:successes]).positive? }
+        retried = @tries.count { |_, v| v[:tries] > 1 && v[:successes].positive? }
         summary += "\n\t#{retried} of #{notification.example_count} tests passed with retries.\n"
         summary += "\t#{notification.failure_count} tests failed all retries.\n"
         output.puts summary

@@ -6,7 +6,7 @@ require 'rspec_ext/rspec_ext'
 
 module RSpec
   class Fortify
-    def self.setup # rubocop:disable Metrics/AbcSize
+    def self.setup
       RSpec.configure do |config|
         config.add_setting :clear_lets_on_failure, default: true
         config.add_setting :default_retry_count, default: 1
@@ -55,7 +55,7 @@ module RSpec
       @current_example ||= RSpec.current_example
     end
 
-    def retry_count # rubocop:disable Metrics/AbcSize
+    def retry_count
       if retry_on_success?
         RSpec.configuration.retry_on_success_count
       elsif retry_on_failure?
@@ -176,10 +176,10 @@ module RSpec
         "#{number}th"
       else
         case number.to_i % 10
-          when 1 then "#{number}st"
-          when 2 then "#{number}nd"
-          when 3 then "#{number}rd"
-          else "#{number}th"
+        when 1 then "#{number}st"
+        when 2 then "#{number}nd"
+        when 3 then "#{number}rd"
+        else "#{number}th"
         end
       end
     end
@@ -224,7 +224,7 @@ module RSpec
   end
 end
 
-def cast_to_boolean(value)
+def cast_to_boolean(value) # rubocop:disable Naming/PredicateMethod
   if value.nil? || %w(false f 0 no n).include?(value.to_s.downcase) # rubocop:disable Style/IfWithBooleanLiteralBranches
     false
   else

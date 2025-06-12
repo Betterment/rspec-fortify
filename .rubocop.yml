@@ -8,14 +8,13 @@ inherit_mode:
 
 AllCops:
   TargetRubyVersion: 3.0
+  Exclude:
+    - 'gemfiles/*.gemfile'
+    - 'Rakefile'
   NewCops: enable
 
-Rails/EnvironmentVariableAccess:
+Capybara/RSpec/PredicateMatcher:
   Enabled: false
 
-RSpec/IndexedLet:
+Betterment/EnvironmentConfiguration:
   Enabled: false
-
-Style/FrozenStringLiteralComment:
-  Exclude:
-    - 'gemfiles/*'
