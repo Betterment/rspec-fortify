@@ -248,9 +248,13 @@ def default_branch
   ENV.fetch('RSPEC_FORTIFY_DEFAULT_BRANCH', 'main')
 end
 
+def git_diff_changed_specs
+  `git diff --merge-base origin/#{default_branch} --name-only --relative --diff-filter=AM -- '*_spec.rb'`
+end
+
 def changed_specs
   ENV.fetch('CHANGED_SPECS', nil)&.split(',') ||
-    `git diff --merge-base origin/#{default_branch} --name-only --relative --diff-filter=AM -- '*_spec.rb'`.chomp.split("\n") || []
+    git_diff_changed_specs.chomp.split("\n") || []
 end
 
 RSpec::Fortify.setup
