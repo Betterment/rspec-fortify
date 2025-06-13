@@ -1,10 +1,8 @@
 # RSpec::Fortify
 
-RSpec::Fortify is a hard fork of [rspec-retry](https://github.com/NoRedInk/rspec-retry)
+> `rspec-fortify` will identify any new or changed tests in your PRs and run them multiple times (10 by default), ensuring that they succeed every single time. This “retry on success” behavior fortifies your suite against flaky tests by detecting them _before_ they get merged. (Once merged, you can use `rspec-fortify`’s “retry on failure” to reduce the impact of any flakes that do slip through to your `main`/default branch.)
 
-RSpec::Fortify adds a ``:retry`` option for intermittently failing rspec examples.
-If an example has the ``:retry`` option, rspec will run the example the
-specified number of times until the example succeeds.
+Note: RSpec::Fortify is a hard fork of [rspec-retry](https://github.com/NoRedInk/rspec-retry)
 
 ## Installation
 
