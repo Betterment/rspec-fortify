@@ -100,7 +100,7 @@ module RSpec
                 ex.metadata[:retry] ||
                 RSpec.configuration.retry_count_condition.call(ex) ||
                 RSpec.configuration.default_retry_count
-        ).to_i,
+          ).to_i,
           1,
         ].max
       end
