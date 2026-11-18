@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Bad Test Example' do # rubocop:disable RSpec/FilePath
+RSpec.describe 'Bad Test Example' do
   let(:foo) { false }
 
   it 'is a bad test' do

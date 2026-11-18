@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Flaky Test Example' do # rubocop:disable RSpec/FilePath
+RSpec.describe 'Flaky Test Example' do
   before(:all) do # rubocop:disable RSpec/BeforeAfterAll
     $try_counter = 0 # rubocop:disable Style/GlobalVars
   end
