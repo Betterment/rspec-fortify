@@ -18,3 +18,13 @@ Capybara/RSpec/PredicateMatcher:
 
 Betterment/EnvironmentConfiguration:
   Enabled: false
+
+# Fixtures are run by name from other specs, so they intentionally don't end
+# in _spec.rb (which keeps the normal spec run from picking them up).
+RSpec/SpecFilePathSuffix:
+  Exclude:
+    - 'spec/fixtures/**/*'
+
+Style/OneClassPerFile:
+  Exclude:
+    - 'lib/rspec_ext/rspec_ext.rb'

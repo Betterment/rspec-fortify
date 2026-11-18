@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Diff Test Example' do # rubocop:disable RSpec/FilePath
+RSpec.describe 'Diff Test Example' do
   let(:foo) { true }
 
   it 'is a diff test' do

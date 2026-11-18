@@ -96,10 +96,10 @@ module RSpec
       else
         [
           (
-          ENV['RSPEC_FORTIFY_RETRY_COUNT'] ||
-              ex.metadata[:retry] ||
-              RSpec.configuration.retry_count_condition.call(ex) ||
-              RSpec.configuration.default_retry_count
+            ENV['RSPEC_FORTIFY_RETRY_COUNT'] ||
+                ex.metadata[:retry] ||
+                RSpec.configuration.retry_count_condition.call(ex) ||
+                RSpec.configuration.default_retry_count
         ).to_i,
           1,
         ].max
